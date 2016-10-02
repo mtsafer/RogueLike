@@ -8,6 +8,7 @@ public class GunScript : MonoBehaviour {
 	public float projectileSpeed;
 	public float knockback;
 	public float ammo;
+	public float maxAmmo;
 	public int clipSize;
 	public float reloadTime;
 	public GameObject bullet;
@@ -17,6 +18,7 @@ public class GunScript : MonoBehaviour {
 		if (gameObject.name == "Starting Gun") {
 			ammo = Mathf.Infinity;
 		}
+		maxAmmo = ammo;
 	}
 	
 	// Update is called once per frame

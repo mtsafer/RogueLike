@@ -1,0 +1,24 @@
+﻿<Properties StartupItem="Assembly-CSharp.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Player Scripts\GunScript.cs">
+    <Files>
+      <File FileName="Assets\Scripts\Player Scripts\PlayerScript.cs" Line="59" Column="68" />
+      <File FileName="Assets\Scripts\Player Scripts\PlayerMoveScript.cs" Line="71" Column="25" />
+      <File FileName="Assets\Scripts\Enemy Scripts\BasicEnemyBulletScript.cs" Line="30" Column="3" />
+      <File FileName="Assets\Scripts\Enemy Scripts\BasicEnemyScript.cs" Line="24" Column="55" />
+      <File FileName="Assets\Scripts\Level Scripts\RoomScript.cs" Line="66" Column="36" />
+      <File FileName="Assets\Scripts\Level Scripts\FloorGeneratorScript.cs" Line="151" Column="66" />
+      <File FileName="Assets\Scripts\Player Scripts\GunScript.cs" Line="19" Column="4" />
+      <File FileName="Assets\Scripts\Player Scripts\AimGunScript.cs" Line="75" Column="27" />
+      <File FileName="Assets\Scripts\Player Scripts\HeartScript.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Item Scripts\FullHeartScript.cs" Line="17" Column="2" />
+      <File FileName="Assets\CanvasScript.cs" Line="7" Column="27" />
+      <File FileName="Assets\ClipScript.cs" Line="83" Column="16" />
+      <File FileName="Assets\AmmoCountScript.cs" Line="17" Column="3" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

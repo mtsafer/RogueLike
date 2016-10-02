@@ -16,6 +16,7 @@ public class PlayerScript : MonoBehaviour {
 	public Slider reloadSlider;
 
 	private GameObject healthHUD;
+	private Image damageImage;
 
 	public void takeDamage () {
 		if(timeSinceHit > 2) {
@@ -24,6 +25,13 @@ public class PlayerScript : MonoBehaviour {
 			Physics.IgnoreLayerCollision (enemyLayer, playerLayer, true);
 			recentlyHit = true;
 			healthHUD.GetComponent<HeartScript> ().renderHealth (this.gameObject);
+			damageImage.color = new Color (damageImage.color.r, damageImage.color.g, damageImage.color.b, 0.3f);
+		}
+	}
+
+	void fadeOutDamageImage() {
+		if (damageImage.color.a > 0) {
+			damageImage.color = new Color (damageImage.color.r, damageImage.color.g, damageImage.color.b, damageImage.color.a - 0.03f);
 		}
 	}
 
@@ -48,6 +56,7 @@ public class PlayerScript : MonoBehaviour {
 
 		healthHUD = GameObject.Find ("HealthHUDCanvas");
 		healthHUD.GetComponent<HeartScript> ().renderHealth (this.gameObject);
+		damageImage = healthHUD.GetComponent<CanvasScript>().damageImage;
 	}
 	
 	// Update is called once per frame
@@ -69,6 +78,8 @@ public class PlayerScript : MonoBehaviour {
 		} else if (!GetComponent<MeshRenderer>().enabled) {
 			GetComponent<MeshRenderer> ().enabled = true;
 		}
+
+		fadeOutDamageImage();
 
 		timeSinceHit += Time.deltaTime;
 	}

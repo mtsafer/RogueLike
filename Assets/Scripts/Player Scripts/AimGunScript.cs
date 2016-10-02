@@ -22,6 +22,7 @@ public class AimGunScript : MonoBehaviour {
 	private float reloadTime;
 	private GameObject reloadAnchor;
 	private Slider builtSlider;
+	private GameObject canvas;
 
 	void targetClosestEnemy(ArrayList enemies){
 		float currentDistance;
@@ -68,8 +69,13 @@ public class AimGunScript : MonoBehaviour {
 	}
 
 	void reload(){
-		GetComponentInChildren<GunScript> ().ammo -= (clipSize - currentClip);
-		currentClip = clipSize;
+		if (clipSize - currentClip > GetComponentInChildren<GunScript> ().ammo) {
+			currentClip = (int)GetComponentInChildren<GunScript> ().ammo;
+		} else {
+			currentClip = clipSize;
+		}
+
+		canvas.GetComponent<ClipScript> ().renderAmmo (clipSize, currentClip, GetComponentInChildren<GunScript> ().maxAmmo, GetComponentInChildren<GunScript> ().ammo);
 	}
 
 	// Use this for initialization
@@ -88,6 +94,10 @@ public class AimGunScript : MonoBehaviour {
 		reloading = false;
 
 		reloadAnchor = GameObject.Find ("ReloadAnchor");
+		canvas = GameObject.Find ("HealthHUDCanvas");
+
+		canvas.GetComponent<ClipScript> ().renderAmmo (clipSize, currentClip, GetComponentInChildren<GunScript> ().maxAmmo, GetComponentInChildren<GunScript> ().ammo);
+
 	}
 	
 	// Update is called once per frame
@@ -121,12 +131,13 @@ public class AimGunScript : MonoBehaviour {
 		trackEnemies ();
 
 		if (Input.GetButton("Fire") && timeSinceLastShot >= timeBetweenShots && !GetComponent<PlayerMoveScript>().dodging && currentClip > 0 && !reloading){
-			print (currentClip);
 			bulletSpawnLocation = GameObject.FindGameObjectWithTag("Bullet Spawner").transform.position;
 			Quaternion bulletSpawnRotation = GameObject.FindGameObjectWithTag ("Bullet Spawner").transform.rotation;
 			Instantiate (bullet, bulletSpawnLocation, bulletSpawnRotation);
 			timeSinceLastShot = 0;
 			currentClip -= 1;
+			GetComponentInChildren<GunScript> ().ammo -= 1;
+			canvas.GetComponent<ClipScript> ().renderAmmo (clipSize, currentClip, GetComponentInChildren<GunScript> ().maxAmmo, GetComponentInChildren<GunScript> ().ammo);
 		}
 
 		if (Input.GetButtonDown ("Reload") && !reloading && currentClip < clipSize) {
