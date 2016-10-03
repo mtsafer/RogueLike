@@ -110,7 +110,7 @@ public class PlayerMoveScript : MonoBehaviour {
 				movementVector.Set (movementVector.x / diagonalCoef, 0, movementVector.z / diagonalCoef);
 			}
 
-			if (moving () && Input.GetButtonDown ("Dodge")) {
+			if (moving () && Input.GetButtonDown ("Dodge") && timeSinceDodge > 0.8f) {
 				dodge ();
 				timeSinceDodge = 0;
 			}

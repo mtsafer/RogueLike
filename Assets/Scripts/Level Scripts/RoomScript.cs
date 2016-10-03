@@ -69,7 +69,7 @@ public class RoomScript : MonoBehaviour {
 			GameObject drop = drops [Random.Range (0, drops.Length)];
 			//check the spawn spot to make sure it's clear of objects
 			Vector3 checkBoxDimensions = new Vector3 (drop.transform.lossyScale.x / 2f - 0.02f, drop.transform.lossyScale.y / 2f - 0.02f, drop.transform.lossyScale.z / 2f - 0.02f);
-			while (Physics.CheckBox (new Vector3 (transform.position.x + xSpawn, 1, transform.position.z + zSpawn), checkBoxDimensions) || distanceFromPlayer < 5) {
+			while (Physics.CheckBox (new Vector3 (transform.position.x + xSpawn, 1, transform.position.z + zSpawn), checkBoxDimensions) || distanceFromPlayer < 1.5f || distanceFromPlayer > 10) {
 				generateSpawnLocation ();
 			}
 			Instantiate (drop, new Vector3 (transform.position.x + xSpawn, 1, transform.position.z + zSpawn), drop.transform.rotation);
@@ -78,7 +78,7 @@ public class RoomScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		minimap = GameObject.Find ("Minimap Camera").GetComponent<Camera> ();
+		minimap = GameObject.FindGameObjectWithTag("Minimap Camera").GetComponent<Camera> ();
 		playerEntered = false;
 		roomCleared = false;
 
