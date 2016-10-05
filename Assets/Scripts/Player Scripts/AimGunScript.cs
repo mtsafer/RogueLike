@@ -23,6 +23,7 @@ public class AimGunScript : MonoBehaviour {
 	private GameObject reloadAnchor;
 	private Slider builtSlider;
 	private GameObject canvas;
+	private GameObject controller;
 
 	void targetClosestEnemy(ArrayList enemies){
 		float currentDistance;
@@ -95,93 +96,93 @@ public class AimGunScript : MonoBehaviour {
 
 		reloadAnchor = GameObject.Find ("ReloadAnchor");
 		canvas = GameObject.Find ("HealthHUDCanvas");
-
+		controller = GameObject.FindGameObjectWithTag ("GameController");
 		canvas.GetComponent<ClipScript> ().renderAmmo (clipSize, currentClip, GetComponentInChildren<GunScript> ().maxAmmo, GetComponentInChildren<GunScript> ().ammo);
 
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		if (!controller.GetComponent<PauseScript>().paused) {
+			// Generate a plane that intersects the transform's position with an upwards normal.
+			Plane playerPlane = new Plane(Vector3.up, transform.position);
 
-		// Generate a plane that intersects the transform's position with an upwards normal.
-		Plane playerPlane = new Plane(Vector3.up, transform.position);
+			// Generate a ray from the cursor position
+			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 
-		// Generate a ray from the cursor position
-		Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+			// Determine the point where the cursor ray intersects the plane.
+			// This will be the point that the object must look towards to be looking at the mouse.
+			// Raycasting to a Plane object only gives us a distance, so we'll have to take the distance,
+			//   then find the point along that ray that meets that distance.  This will be the point
+			//   to look at.
+			float hitdist = 0.0f;
+			// If the ray is parallel to the plane, Raycast will return false.
+			if (playerPlane.Raycast (ray, out hitdist)) 
+			{
+				// Get the point along the ray that hits the calculated distance.
+				Vector3 targetPoint = ray.GetPoint(hitdist);
 
-		// Determine the point where the cursor ray intersects the plane.
-		// This will be the point that the object must look towards to be looking at the mouse.
-		// Raycasting to a Plane object only gives us a distance, so we'll have to take the distance,
-		//   then find the point along that ray that meets that distance.  This will be the point
-		//   to look at.
-		float hitdist = 0.0f;
-		// If the ray is parallel to the plane, Raycast will return false.
-		if (playerPlane.Raycast (ray, out hitdist)) 
-		{
-			// Get the point along the ray that hits the calculated distance.
-			Vector3 targetPoint = ray.GetPoint(hitdist);
+				// Determine the target rotation.  This is the rotation if the transform looks at the target point.
+				Quaternion targetRotation = Quaternion.LookRotation(targetPoint - transform.position);
 
-			// Determine the target rotation.  This is the rotation if the transform looks at the target point.
-			Quaternion targetRotation = Quaternion.LookRotation(targetPoint - transform.position);
+				// Smoothly rotate towards the target point.
+				transform.rotation = targetRotation;
+			}
+				
+			trackEnemies ();
 
-			// Smoothly rotate towards the target point.
-			transform.rotation = targetRotation;
-		}
-			
-		trackEnemies ();
+			if (Input.GetButton("Fire") && timeSinceLastShot >= timeBetweenShots && !GetComponent<PlayerMoveScript>().dodging && currentClip > 0 && !reloading){
+				bulletSpawnLocation = GameObject.FindGameObjectWithTag("Bullet Spawner").transform.position;
+				Quaternion bulletSpawnRotation = GameObject.FindGameObjectWithTag ("Bullet Spawner").transform.rotation;
+				Instantiate (bullet, bulletSpawnLocation, bulletSpawnRotation);
+				timeSinceLastShot = 0;
+				currentClip -= 1;
+				GetComponentInChildren<GunScript> ().ammo -= 1;
+				canvas.GetComponent<ClipScript> ().renderAmmo (clipSize, currentClip, GetComponentInChildren<GunScript> ().maxAmmo, GetComponentInChildren<GunScript> ().ammo);
+			}
 
-		if (Input.GetButton("Fire") && timeSinceLastShot >= timeBetweenShots && !GetComponent<PlayerMoveScript>().dodging && currentClip > 0 && !reloading){
-			bulletSpawnLocation = GameObject.FindGameObjectWithTag("Bullet Spawner").transform.position;
-			Quaternion bulletSpawnRotation = GameObject.FindGameObjectWithTag ("Bullet Spawner").transform.rotation;
-			Instantiate (bullet, bulletSpawnLocation, bulletSpawnRotation);
-			timeSinceLastShot = 0;
-			currentClip -= 1;
-			GetComponentInChildren<GunScript> ().ammo -= 1;
-			canvas.GetComponent<ClipScript> ().renderAmmo (clipSize, currentClip, GetComponentInChildren<GunScript> ().maxAmmo, GetComponentInChildren<GunScript> ().ammo);
-		}
+			if (Input.GetButtonDown ("Reload") && !reloading && currentClip < clipSize) {
+				reloadTime = 0;
+				reloading = true;
+			}
 
-		if (Input.GetButtonDown ("Reload") && !reloading && currentClip < clipSize) {
-			reloadTime = 0;
-			reloading = true;
-		}
+			if (reloading && reloadTime > GetComponentInChildren<GunScript> ().reloadTime) {
+				reload ();
+				reloading = false;
+			}
 
-		if (reloading && reloadTime > GetComponentInChildren<GunScript> ().reloadTime) {
-			reload ();
-			reloading = false;
-		}
-
-		if (reloading) {
-			//Color color = GameObject.Find ("ReloadBackground").GetComponent<Slider>().colors;
-			//GameObject.Find ("ReloadBackground").GetComponent<Slider>().colors[0] = new Color (color.r, color.g, color.b, 1);
-			//color = GameObject.Find ("ReloadFill").GetComponent<Material> ().color;
-			//GameObject.Find ("Reloadfill").GetComponent<Material> ().color = new Color (color.r, color.g, color.b, 1);
-			if (builtSlider == null) {
-				Slider reloadSlider = GetComponent<PlayerScript> ().reloadSlider;
-				builtSlider = Instantiate (reloadSlider, reloadSlider.transform.position, reloadSlider.transform.rotation) as Slider;
-				builtSlider.transform.SetParent (reloadAnchor.transform);
-				builtSlider.transform.localPosition = new Vector3 (0, 30, 0);
-				builtSlider.transform.localRotation = new Quaternion (25, 0, 0, reloadSlider.transform.rotation.w);
-				builtSlider.transform.localScale = new Vector3 (1, 1, 1);
+			if (reloading) {
+				//Color color = GameObject.Find ("ReloadBackground").GetComponent<Slider>().colors;
+				//GameObject.Find ("ReloadBackground").GetComponent<Slider>().colors[0] = new Color (color.r, color.g, color.b, 1);
+				//color = GameObject.Find ("ReloadFill").GetComponent<Material> ().color;
+				//GameObject.Find ("Reloadfill").GetComponent<Material> ().color = new Color (color.r, color.g, color.b, 1);
+				if (builtSlider == null) {
+					Slider reloadSlider = GetComponent<PlayerScript> ().reloadSlider;
+					builtSlider = Instantiate (reloadSlider, reloadSlider.transform.position, reloadSlider.transform.rotation) as Slider;
+					builtSlider.transform.SetParent (reloadAnchor.transform);
+					builtSlider.transform.localPosition = new Vector3 (0, 30, 0);
+					builtSlider.transform.localRotation = new Quaternion (25, 0, 0, reloadSlider.transform.rotation.w);
+					builtSlider.transform.localScale = new Vector3 (1, 1, 1);
+				} else {
+					builtSlider.fillRect.transform.localPosition = new Vector3(reloadTime / GetComponentInChildren<GunScript> ().reloadTime * 55 -  25 ,0, 0);
+				}
 			} else {
-				builtSlider.fillRect.transform.localPosition = new Vector3(reloadTime / GetComponentInChildren<GunScript> ().reloadTime * 55 -  25 ,0, 0);
+				if (builtSlider) {
+					GameObject slider = GameObject.FindGameObjectWithTag ("Reload Slider");
+					Destroy (slider.gameObject);
+					builtSlider = null;
+				}
 			}
-		} else {
-			if (builtSlider) {
-				GameObject slider = GameObject.FindGameObjectWithTag ("Reload Slider");
-				Destroy (slider.gameObject);
-				builtSlider = null;
+
+			timeSinceLastShot += Time.deltaTime;
+
+			if (timeSinceLastShot < 0.05f) {
+				muzzleFlashStart ();
+			} else {
+				muzzleFlashEnd ();
 			}
+
+			reloadTime += Time.deltaTime;
 		}
-
-		timeSinceLastShot += Time.deltaTime;
-
-		if (timeSinceLastShot < 0.05f) {
-			muzzleFlashStart ();
-		} else {
-			muzzleFlashEnd ();
-		}
-
-		reloadTime += Time.deltaTime;
-
 	}
 }

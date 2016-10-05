@@ -29,6 +29,7 @@ public class RoomScript : MonoBehaviour {
 	private int zSpawn;
 	private bool roomCleared;
 	private float distanceFromPlayer;
+	private GameObject controller;
 
 	//set random coodinates for spawn location
 	void generateSpawnLocation(){
@@ -96,6 +97,7 @@ public class RoomScript : MonoBehaviour {
 		for (int i = 0; i < waves; i++){
 			enemiesInWaves[i] = Random.Range (minEnemiesInWave, maxEnemiesInWave+1);
 		}
+		controller = GameObject.FindGameObjectWithTag ("GameController");
 	}
 	
 	// Update is called once per frame
@@ -111,12 +113,14 @@ public class RoomScript : MonoBehaviour {
 					closeDoor (door);
 				}
 				minimap.enabled = false;
+				controller.GetComponent<OpenMinimapScript> ().canOpenMap = false;
 			}
 
 			//all enemies defeated and all waves defeates, open the doors
 			if (waves == 0 && enemiesLeft == 0){
 				if (!roomCleared) {
 					minimap.enabled = true;
+					controller.GetComponent<OpenMinimapScript> ().canOpenMap = true;
 					if (gameObject.name.Substring(0,13) != "Starting Room") {	
 						chanceToSpawnDrop ();
 					}

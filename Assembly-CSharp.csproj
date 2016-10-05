@@ -45,19 +45,26 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\AmmoCountScript.cs" />
-     <Compile Include="Assets\CameraSpawner.cs" />
-     <Compile Include="Assets\CanvasScript.cs" />
-     <Compile Include="Assets\ClipScript.cs" />
+     <Compile Include="Assets\AcceleratingBossBulletScript.cs" />
+     <Compile Include="Assets\BasicBossBulletScript.cs" />
+     <Compile Include="Assets\FirstBossAttackScript.cs" />
+     <Compile Include="Assets\FirstBossScript.cs" />
+     <Compile Include="Assets\HomingBulletScript.cs" />
      <Compile Include="Assets\Scripts\Enemy Scripts\AimAtPlayerScript.cs" />
      <Compile Include="Assets\Scripts\Enemy Scripts\BasicEnemyBulletScript.cs" />
      <Compile Include="Assets\Scripts\Enemy Scripts\BasicEnemyScript.cs" />
      <Compile Include="Assets\Scripts\Enemy Scripts\BasicEnemyShootScript.cs" />
      <Compile Include="Assets\Scripts\Enemy Scripts\EnemyAttributesScript.cs" />
      <Compile Include="Assets\Scripts\Item Scripts\FullHeartScript.cs" />
+     <Compile Include="Assets\Scripts\Level Scripts\AmmoCountScript.cs" />
+     <Compile Include="Assets\Scripts\Level Scripts\CameraSpawner.cs" />
+     <Compile Include="Assets\Scripts\Level Scripts\CanvasScript.cs" />
+     <Compile Include="Assets\Scripts\Level Scripts\ClipScript.cs" />
      <Compile Include="Assets\Scripts\Level Scripts\FloorGeneratorScript.cs" />
      <Compile Include="Assets\Scripts\Level Scripts\HallCoverScript.cs" />
      <Compile Include="Assets\Scripts\Level Scripts\HallTriggerScript.cs" />
+     <Compile Include="Assets\Scripts\Level Scripts\OpenMinimapScript.cs" />
+     <Compile Include="Assets\Scripts\Level Scripts\PauseScript.cs" />
      <Compile Include="Assets\Scripts\Level Scripts\RoomCoverScript.cs" />
      <Compile Include="Assets\Scripts\Level Scripts\RoomEntranceScript.cs" />
      <Compile Include="Assets\Scripts\Level Scripts\RoomScript.cs" />
@@ -68,9 +75,11 @@
      <Compile Include="Assets\Scripts\Player Scripts\GunScript.cs" />
      <Compile Include="Assets\Scripts\Player Scripts\HeartScript.cs" />
      <Compile Include="Assets\Scripts\Player Scripts\MinimapScript.cs" />
+     <Compile Include="Assets\Scripts\Player Scripts\PlayerMinimapIconScript.cs" />
      <Compile Include="Assets\Scripts\Player Scripts\PlayerMoveScript.cs" />
      <Compile Include="Assets\Scripts\Player Scripts\PlayerScript.cs" />
      <Compile Include="Assets\Scripts\Player Scripts\ShootScript.cs" />
+     <Compile Include="Assets\TripleBreakBulletScript.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

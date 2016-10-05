@@ -10,6 +10,7 @@ public class FloorGeneratorScript : MonoBehaviour {
 	public GameObject[] xRooms;
 	public GameObject[] diamondRooms;
 	public GameObject[] diamondCenterRooms;
+	public GameObject[] bossRooms;
 
 	public GameObject player;
 	private GameObject[][] allRooms;
@@ -28,6 +29,7 @@ public class FloorGeneratorScript : MonoBehaviour {
 	private bool buildIsComplete;
 	private bool navMeshBuilt;
 	private bool newSpawns;
+	private bool hasBossRoom;
 
 	GameObject selectRandomFrom(GameObject[] list){
 		return list [Random.Range (0, list.Length)];
@@ -144,6 +146,24 @@ public class FloorGeneratorScript : MonoBehaviour {
 		return true;
 	}
 
+	bool bossRoomFits(GameObject spawn){
+		//there is enough space, and there are no rooms that open into boss room beside the parent of the spawn room
+		//forward
+		if (Physics.Raycast (spawn.transform.position, spawn.transform.forward, 100)) {
+			return false;
+		}
+		//right
+		if(Physics.Raycast(spawn.transform.position, spawn.transform.right, 80)){
+			return false;
+		}
+		//left
+		if(Physics.Raycast(spawn.transform.position, spawn.transform.right*-1, 80)){
+			return false;
+		}
+
+		return true;
+	}
+
 	void restartBuild(){
 		//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		//delete all rooms, reset bools, set roomCount to 0
@@ -154,6 +174,7 @@ public class FloorGeneratorScript : MonoBehaviour {
 		}
 		buildIsComplete = false;
 		navMeshBuilt = false;
+		hasBossRoom = false;
 		startingRoom = selectRandomFrom (startingRooms);
 		Instantiate (startingRoom, transform.position, transform.rotation);
 		roomCount = 1;
@@ -169,6 +190,7 @@ public class FloorGeneratorScript : MonoBehaviour {
 		roomCount = 1;
 		playerPosition = new Vector3 (transform.position.x, transform.position.y + 1, transform.position.z);
 		Instantiate (player, playerPosition, transform.rotation);
+		hasBossRoom = false;
 	}
 	
 	// Update is called once per frame
@@ -186,7 +208,7 @@ public class FloorGeneratorScript : MonoBehaviour {
 
 			if (roomCount < minNumberOfRooms) {
 				if (!Physics.CheckSphere (spawn.transform.position, 1)) {
-					GameObject newRoom = selectRandomFrom (selectRoomSet(allRooms));
+					GameObject newRoom = selectRandomFrom (selectRoomSet (allRooms));
 					if (isInLine (newRoom, spawn)) {
 						Instantiate (newRoom, spawn.transform.position, transform.rotation);
 						roomCount++;
@@ -195,13 +217,22 @@ public class FloorGeneratorScript : MonoBehaviour {
 
 			} else {
 				if (!Physics.CheckSphere (spawn.transform.position, 1)) {
-					GameObject newRoom = selectRandomFrom (selectRoomSet(allRooms));
-					while(!noNewSpawn(newRoom, spawn) || !isInLine (newRoom, spawn)){
-						newRoom = selectRandomFrom (selectRoomSet(allRooms));
-					}
-					if (isInLine (newRoom, spawn)) {
-						Instantiate (newRoom, spawn.transform.position, transform.rotation);
-						roomCount++;
+					if (bossRoomFits (spawn) && !hasBossRoom) {
+						GameObject newRoom = selectRandomFrom (bossRooms);
+						if (isInLine (newRoom, spawn)) {
+							Instantiate (newRoom, spawn.transform.position + 20*spawn.transform.forward, newRoom.transform.rotation);
+							roomCount++;
+							hasBossRoom = true;
+						}
+					} else {
+						GameObject newRoom = selectRandomFrom (selectRoomSet (allRooms));
+						while (!noNewSpawn (newRoom, spawn) || !isInLine (newRoom, spawn)) {
+							newRoom = selectRandomFrom (selectRoomSet (allRooms));
+						}
+						if (isInLine (newRoom, spawn)) {
+							Instantiate (newRoom, spawn.transform.position, transform.rotation);
+							roomCount++;
+						}
 					}
 				}
 			}
@@ -215,7 +246,7 @@ public class FloorGeneratorScript : MonoBehaviour {
 
 
 		if (buildIsComplete) {
-			if (roomCount >= minNumberOfRooms && roomCount <= maxNumberOfRooms) {
+			if (roomCount >= minNumberOfRooms && roomCount <= maxNumberOfRooms && hasBossRoom) {
 				if (!navMeshBuilt) {
 					//NavMeshBuilder.BuildNavMesh ();
 					navMeshBuilt = true;

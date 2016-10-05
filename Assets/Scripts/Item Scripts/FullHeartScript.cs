@@ -7,7 +7,7 @@ public class FullHeartScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		heartUI = GameObject.Find ("HealthHUDCanvas");
+		heartUI = GameObject.FindGameObjectWithTag ("Canvas");
 	}
 	
 	// Update is called once per frame
