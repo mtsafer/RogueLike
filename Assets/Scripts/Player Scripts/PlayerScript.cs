@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class PlayerScript : MonoBehaviour {
 
 	public float health;
-
+	public float energy;
 	public float maxHealth;
 	public int luck;
 	private float timeSinceHit;
@@ -15,8 +15,10 @@ public class PlayerScript : MonoBehaviour {
 
 	public Slider reloadSlider;
 
+	public float maxEnergy;
 	private GameObject healthHUD;
 	private Image damageImage;
+	private Slider energyBar;
 
 	public void takeDamage () {
 		if(timeSinceHit > 2) {
@@ -57,6 +59,8 @@ public class PlayerScript : MonoBehaviour {
 		healthHUD = GameObject.Find ("HealthHUDCanvas");
 		healthHUD.GetComponent<HeartScript> ().renderHealth (this.gameObject);
 		damageImage = healthHUD.GetComponent<CanvasScript>().damageImage;
+		maxEnergy = energy;
+		energyBar = GameObject.FindGameObjectWithTag ("Energy Bar").GetComponent<Slider> ();
 	}
 	
 	// Update is called once per frame
@@ -82,5 +86,12 @@ public class PlayerScript : MonoBehaviour {
 		fadeOutDamageImage();
 
 		timeSinceHit += Time.deltaTime;
+		if (energy < maxEnergy) {
+			energy += Time.deltaTime * 40;
+		} else {
+			energy = maxEnergy;
+		}
+
+		energyBar.value = energy / maxEnergy;
 	}
 }

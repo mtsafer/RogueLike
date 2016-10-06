@@ -34,6 +34,10 @@ public class FirstBossScript : MonoBehaviour {
 		if (gameObject.GetComponent<EnemyAttributesScript> ().health <= 0) {
 			Destroy (healthBar.gameObject);
 			Destroy (this.gameObject);
+			GameObject[] bullets = GameObject.FindGameObjectsWithTag ("Bullet");
+			foreach (GameObject bullet in bullets) {
+				Destroy (bullet.gameObject);
+			}
 		}
 
 	}

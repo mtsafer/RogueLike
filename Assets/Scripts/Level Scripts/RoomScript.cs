@@ -67,13 +67,15 @@ public class RoomScript : MonoBehaviour {
 		if (roll < player.GetComponent<PlayerScript>().luck) {
 			print ("Spawn a drop!");
 			generateSpawnLocation ();
-			GameObject drop = drops [Random.Range (0, drops.Length)];
-			//check the spawn spot to make sure it's clear of objects
-			Vector3 checkBoxDimensions = new Vector3 (drop.transform.lossyScale.x / 2f - 0.02f, drop.transform.lossyScale.y / 2f - 0.02f, drop.transform.lossyScale.z / 2f - 0.02f);
-			while (Physics.CheckBox (new Vector3 (transform.position.x + xSpawn, 1, transform.position.z + zSpawn), checkBoxDimensions) || distanceFromPlayer < 1.5f || distanceFromPlayer > 10) {
-				generateSpawnLocation ();
+			if (drops.Length > 0) {
+				GameObject drop = drops [Random.Range (0, drops.Length)];
+				//check the spawn spot to make sure it's clear of objects
+				Vector3 checkBoxDimensions = new Vector3 (drop.transform.lossyScale.x / 2f - 0.02f, drop.transform.lossyScale.y / 2f - 0.02f, drop.transform.lossyScale.z / 2f - 0.02f);
+				while (Physics.CheckBox (new Vector3 (transform.position.x + xSpawn, 1, transform.position.z + zSpawn), checkBoxDimensions) || distanceFromPlayer < 1.5f || distanceFromPlayer > 10) {
+					generateSpawnLocation ();
+				}
+				Instantiate (drop, new Vector3 (transform.position.x + xSpawn, 1, transform.position.z + zSpawn), drop.transform.rotation);
 			}
-			Instantiate (drop, new Vector3 (transform.position.x + xSpawn, 1, transform.position.z + zSpawn), drop.transform.rotation);
 		}
 	}
 

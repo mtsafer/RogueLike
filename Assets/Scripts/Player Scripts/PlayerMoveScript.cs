@@ -35,28 +35,28 @@ public class PlayerMoveScript : MonoBehaviour {
 
 	void dodge(){
 		if (Input.GetButton ("Left")) {
-			movementVector.Set (-speed*1.75f, 0, movementVector.z);
+			movementVector.Set (-speed*7f, 0, movementVector.z);
 		}
 
 		//move right
 		if (Input.GetButton ("Right")) {
-			movementVector.Set (speed*1.75f, 0, movementVector.z);
+			movementVector.Set (speed*7f, 0, movementVector.z);
 		}
 
 		//move up
 		if (Input.GetButton ("Up")) {
-			movementVector.Set (movementVector.x, 0, speed*1.75f);
+			movementVector.Set (movementVector.x, 0, speed*7f);
 		}
 
 		if (Input.GetButton ("Down")) {
-			movementVector.Set (movementVector.x, 0, -speed*1.75f);
+			movementVector.Set (movementVector.x, 0, -speed*7f);
 		}
 
 		if (movingDiagonal ()) {
 			movementVector.Set (movementVector.x / diagonalCoef, 0, movementVector.z / diagonalCoef);
 		}
 		dodging = true;
-
+		GetComponent<PlayerScript> ().energy -= 30;
 	}
 
 	// Use this for initialization
@@ -71,12 +71,12 @@ public class PlayerMoveScript : MonoBehaviour {
 	void Update () {
 		if(!controller.GetComponent<PauseScript>().paused){
 			movementVector.Set (rb.velocity.x, 0, rb.velocity.z);
-			if (timeSinceDodge > 0.45f) {
+			if (timeSinceDodge > 0.11f) {
 				invulnerable = false;
 			} else {
 				invulnerable = true;
 			}
-			if (timeSinceDodge > 0.6f) {
+			if (timeSinceDodge > 0.1f) {
 				dodging = false;
 
 				//move left
@@ -114,9 +114,17 @@ public class PlayerMoveScript : MonoBehaviour {
 					movementVector.Set (movementVector.x / diagonalCoef, 0, movementVector.z / diagonalCoef);
 				}
 
-				if (moving () && Input.GetButtonDown ("Dodge") && timeSinceDodge > 0.8f) {
+				if (moving () && Input.GetButton ("Dodge") && timeSinceDodge > 0.1f && GetComponent<PlayerScript>().energy > 30) {
 					dodge ();
 					timeSinceDodge = 0;
+				}
+				if (timeSinceDodge > 0.15f) {
+					if (Mathf.Abs (movementVector.x) > speed) {
+						movementVector.x = speed * movementVector.x / Mathf.Abs (movementVector.x);
+					}
+					if (Mathf.Abs (movementVector.z) > speed) {
+						movementVector.z = speed * movementVector.z / Mathf.Abs (movementVector.z);
+					}
 				}
 			}
 			timeSinceDodge += Time.deltaTime;

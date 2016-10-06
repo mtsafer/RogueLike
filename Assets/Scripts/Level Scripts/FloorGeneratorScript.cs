@@ -56,11 +56,17 @@ public class FloorGeneratorScript : MonoBehaviour {
 		//North
 		if(Physics.Raycast(spawn.transform.position, transform.forward, out hit, 40)){
 			neighborDoors = (hit.transform.gameObject.GetComponentInParent<RoomScript>().doorList);
-			if (matchIn (neighborDoors, "South")) {
+				
+			if (matchIn (neighborDoors, "South") && hit.transform.parent.name.Substring(0,9) == "Boss Room") {
+				print ("Found the boss!");
+				if (matchIn (room.GetComponent<RoomScript> ().doorList, "North")) {
+					return false;
+				}
+			} else if (matchIn (neighborDoors, "South")) {
 				if (!matchIn (room.GetComponent<RoomScript> ().doorList, "North")) {
 					return false;
 				}
-			}else if (!matchIn (neighborDoors, "South")) {
+			} else if (!matchIn (neighborDoors, "South")) {
 				if (matchIn (room.GetComponent<RoomScript> ().doorList, "North")) {
 					return false;
 				}
@@ -69,7 +75,11 @@ public class FloorGeneratorScript : MonoBehaviour {
 		//East
 		if(Physics.Raycast(spawn.transform.position, transform.right, out hit, 40)){
 			neighborDoors = (hit.transform.gameObject.GetComponentInParent<RoomScript>().doorList);
-			if (matchIn (neighborDoors, "West")) {
+			if (matchIn (neighborDoors, "West") && hit.transform.parent.name.Substring(0,9) == "Boss Room") {
+				if (matchIn (room.GetComponent<RoomScript> ().doorList, "East")) {
+					return false;
+				}
+			} else if (matchIn (neighborDoors, "West")) {
 				if (!matchIn (room.GetComponent<RoomScript> ().doorList, "East")) {
 					return false;
 				}
@@ -82,7 +92,11 @@ public class FloorGeneratorScript : MonoBehaviour {
 		//South
 		if(Physics.Raycast(spawn.transform.position, transform.forward*-1, out hit, 40)){
 			neighborDoors = (hit.transform.gameObject.GetComponentInParent<RoomScript>().doorList);
-			if (matchIn (neighborDoors, "North")) {
+			if (matchIn (neighborDoors, "North") && hit.transform.parent.name.Substring(0,9) == "Boss Room") {
+				if (matchIn (room.GetComponent<RoomScript> ().doorList, "South")) {
+					return false;
+				}
+			} else if (matchIn (neighborDoors, "North")) {
 				if (!matchIn (room.GetComponent<RoomScript> ().doorList, "South")) {
 					return false;
 				}
@@ -95,7 +109,11 @@ public class FloorGeneratorScript : MonoBehaviour {
 		//West
 		if(Physics.Raycast(spawn.transform.position, transform.right*-1, out hit, 40)){
 			neighborDoors = (hit.transform.gameObject.GetComponentInParent<RoomScript>().doorList);
-			if (matchIn (neighborDoors, "East")) {
+			if (matchIn (neighborDoors, "East") && hit.transform.parent.name.Substring(0,9) == "Boss Room") {
+				if (matchIn (room.GetComponent<RoomScript> ().doorList, "West")) {
+					return false;
+				}
+			} else if (matchIn (neighborDoors, "East")) {
 				if (!matchIn (room.GetComponent<RoomScript> ().doorList, "West")) {
 					return false;
 				}
@@ -149,15 +167,23 @@ public class FloorGeneratorScript : MonoBehaviour {
 	bool bossRoomFits(GameObject spawn){
 		//there is enough space, and there are no rooms that open into boss room beside the parent of the spawn room
 		//forward
-		if (Physics.Raycast (spawn.transform.position, spawn.transform.forward, 100)) {
+		if (Physics.Raycast (spawn.transform.position, spawn.transform.forward, 140)) {
 			return false;
 		}
 		//right
-		if(Physics.Raycast(spawn.transform.position, spawn.transform.right, 80)){
+		if(Physics.Raycast(spawn.transform.position, spawn.transform.right, 60)){
 			return false;
 		}
 		//left
-		if(Physics.Raycast(spawn.transform.position, spawn.transform.right*-1, 80)){
+		if(Physics.Raycast(spawn.transform.position, spawn.transform.right*-1, 60)){
+			return false;
+		}
+		//forward + right
+		if(Physics.Raycast(spawn.transform.position, spawn.transform.forward + spawn.transform.right, 180)){
+			return false;
+		}
+		//forward + left
+		if(Physics.Raycast(spawn.transform.position, spawn.transform.forward + spawn.transform.right*-1, 180)){
 			return false;
 		}
 
@@ -220,7 +246,7 @@ public class FloorGeneratorScript : MonoBehaviour {
 					if (bossRoomFits (spawn) && !hasBossRoom) {
 						GameObject newRoom = selectRandomFrom (bossRooms);
 						if (isInLine (newRoom, spawn)) {
-							Instantiate (newRoom, spawn.transform.position + 20*spawn.transform.forward, newRoom.transform.rotation);
+							Instantiate (newRoom, spawn.transform.position + 60*spawn.transform.forward, newRoom.transform.rotation);
 							roomCount++;
 							hasBossRoom = true;
 						}

@@ -171,6 +171,12 @@ public class FirstBossAttackScript : MonoBehaviour {
 			//timeSinceLastShot = 0;
 		}
 
+		if (attackPattern == 1) {
+			GetComponent<NavMeshAgent> ().Stop();
+		} else {
+			GetComponent<NavMeshAgent> ().Resume();
+		}
+
 		if (attackPattern == 0) {
 			sprayBullets ();
 		} else if (attackPattern == 1) {
@@ -182,6 +188,7 @@ public class FirstBossAttackScript : MonoBehaviour {
 		} else if (attackPattern == 4 && gameObject.GetComponent<EnemyAttributesScript> ().health < maxHealth / 3) {
 			bulletHell ();
 		}
+			
 
 		timeSinceLastShot += Time.deltaTime;
 	}

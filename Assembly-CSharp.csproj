@@ -47,6 +47,8 @@
   <ItemGroup>
      <Compile Include="Assets\AcceleratingBossBulletScript.cs" />
      <Compile Include="Assets\BasicBossBulletScript.cs" />
+     <Compile Include="Assets\BossRoomTextureAdjust.cs" />
+     <Compile Include="Assets\DropSpinScript.cs" />
      <Compile Include="Assets\FirstBossAttackScript.cs" />
      <Compile Include="Assets\FirstBossScript.cs" />
      <Compile Include="Assets\HomingBulletScript.cs" />
