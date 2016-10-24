@@ -1,11 +1,12 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\FirstBossAttackScript.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Player Scripts\GunScript.cs">
     <Files>
-      <File FileName="Assets\Scripts\Player Scripts\PlayerScript.cs" Line="90" Column="32" />
-      <File FileName="Assets\Scripts\Player Scripts\PlayerMoveScript.cs" Line="117" Column="70" />
-      <File FileName="Assets\FirstBossAttackScript.cs" Line="182" Column="35" />
-      <File FileName="Assets\FirstBossScript.cs" Line="39" Column="31" />
+      <File FileName="Assets\CameraLerpScript.cs" Line="26" Column="85" />
+      <File FileName="Assets\Scripts\Player Scripts\GunHolderScript.cs" Line="37" Column="3" />
+      <File FileName="Assets\Scripts\Player Scripts\AimGunScript.cs" Line="167" Column="31" />
+      <File FileName="Assets\Scripts\Player Scripts\PlayerScript.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Player Scripts\GunScript.cs" Line="24" Column="4" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

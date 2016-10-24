@@ -45,23 +45,27 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\AcceleratingBossBulletScript.cs" />
-     <Compile Include="Assets\BasicBossBulletScript.cs" />
-     <Compile Include="Assets\BossRoomTextureAdjust.cs" />
-     <Compile Include="Assets\DropSpinScript.cs" />
-     <Compile Include="Assets\FirstBossAttackScript.cs" />
-     <Compile Include="Assets\FirstBossScript.cs" />
-     <Compile Include="Assets\HomingBulletScript.cs" />
+     <Compile Include="Assets\CameraLerpScript.cs" />
+     <Compile Include="Assets\CoinScript.cs" />
+     <Compile Include="Assets\MoneyCountScript.cs" />
+     <Compile Include="Assets\Scripts\Bullet Scripts\AcceleratingBossBulletScript.cs" />
+     <Compile Include="Assets\Scripts\Bullet Scripts\BasicBossBulletScript.cs" />
+     <Compile Include="Assets\Scripts\Bullet Scripts\BasicEnemyBulletScript.cs" />
+     <Compile Include="Assets\Scripts\Bullet Scripts\HomingBulletScript.cs" />
+     <Compile Include="Assets\Scripts\Bullet Scripts\TripleBreakBulletScript.cs" />
      <Compile Include="Assets\Scripts\Enemy Scripts\AimAtPlayerScript.cs" />
-     <Compile Include="Assets\Scripts\Enemy Scripts\BasicEnemyBulletScript.cs" />
      <Compile Include="Assets\Scripts\Enemy Scripts\BasicEnemyScript.cs" />
      <Compile Include="Assets\Scripts\Enemy Scripts\BasicEnemyShootScript.cs" />
      <Compile Include="Assets\Scripts\Enemy Scripts\EnemyAttributesScript.cs" />
+     <Compile Include="Assets\Scripts\Enemy Scripts\FirstBossAttackScript.cs" />
+     <Compile Include="Assets\Scripts\Enemy Scripts\FirstBossScript.cs" />
      <Compile Include="Assets\Scripts\Item Scripts\FullHeartScript.cs" />
      <Compile Include="Assets\Scripts\Level Scripts\AmmoCountScript.cs" />
+     <Compile Include="Assets\Scripts\Level Scripts\BossRoomTextureAdjust.cs" />
      <Compile Include="Assets\Scripts\Level Scripts\CameraSpawner.cs" />
      <Compile Include="Assets\Scripts\Level Scripts\CanvasScript.cs" />
      <Compile Include="Assets\Scripts\Level Scripts\ClipScript.cs" />
+     <Compile Include="Assets\Scripts\Level Scripts\DropSpinScript.cs" />
      <Compile Include="Assets\Scripts\Level Scripts\FloorGeneratorScript.cs" />
      <Compile Include="Assets\Scripts\Level Scripts\HallCoverScript.cs" />
      <Compile Include="Assets\Scripts\Level Scripts\HallTriggerScript.cs" />
@@ -71,9 +75,11 @@
      <Compile Include="Assets\Scripts\Level Scripts\RoomEntranceScript.cs" />
      <Compile Include="Assets\Scripts\Level Scripts\RoomScript.cs" />
      <Compile Include="Assets\Scripts\Level Scripts\RoomSpawnerScript.cs" />
+     <Compile Include="Assets\Scripts\Level Scripts\TreasureSpawnScript.cs" />
      <Compile Include="Assets\Scripts\Player Scripts\AimGunScript.cs" />
      <Compile Include="Assets\Scripts\Player Scripts\BulletScript.cs" />
-     <Compile Include="Assets\Scripts\Player Scripts\CemeraScript.cs" />
+     <Compile Include="Assets\Scripts\Player Scripts\CameraScript.cs" />
+     <Compile Include="Assets\Scripts\Player Scripts\GunHolderScript.cs" />
      <Compile Include="Assets\Scripts\Player Scripts\GunScript.cs" />
      <Compile Include="Assets\Scripts\Player Scripts\HeartScript.cs" />
      <Compile Include="Assets\Scripts\Player Scripts\MinimapScript.cs" />
@@ -81,7 +87,10 @@
      <Compile Include="Assets\Scripts\Player Scripts\PlayerMoveScript.cs" />
      <Compile Include="Assets\Scripts\Player Scripts\PlayerScript.cs" />
      <Compile Include="Assets\Scripts\Player Scripts\ShootScript.cs" />
-     <Compile Include="Assets\TripleBreakBulletScript.cs" />
+     <Compile Include="Assets\Scripts\Weapon Scripts\Bullet Scripts\ShotgunBulletScript.cs" />
+     <Compile Include="Assets\Scripts\Weapon Scripts\FireScript.cs" />
+     <Compile Include="Assets\Scripts\Weapon Scripts\GunContainerScript.cs" />
+     <Compile Include="Assets\Scripts\Weapon Scripts\ShotgunScript.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

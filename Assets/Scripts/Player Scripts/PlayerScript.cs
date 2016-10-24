@@ -8,6 +8,7 @@ public class PlayerScript : MonoBehaviour {
 	public float energy;
 	public float maxHealth;
 	public int luck;
+	public int gold;
 	private float timeSinceHit;
 	private int enemyLayer;
 	private int playerLayer;
@@ -19,6 +20,7 @@ public class PlayerScript : MonoBehaviour {
 	private GameObject healthHUD;
 	private Image damageImage;
 	private Slider energyBar;
+	public Canvas canvas;
 
 	public void takeDamage () {
 		if(timeSinceHit > 2) {
@@ -65,6 +67,10 @@ public class PlayerScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+		if (canvas.transform.parent != null){
+			canvas.transform.SetParent(null);
+		}
 
 		if (health > maxHealth) {
 			maxHealth = health;

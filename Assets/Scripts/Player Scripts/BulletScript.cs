@@ -2,30 +2,31 @@
 using System.Collections;
 
 public class BulletScript : MonoBehaviour {
-
+	
+	public float lifeSpan;
 	public Rigidbody rb;
 
-	private float speed;
+	protected float speed;
+
 	private float knockback;
 	private float damage;
 	private GameObject player;
 
 	// Use this for initialization
-	void Start () {
+	protected virtual void Start () {
 		player = GameObject.FindGameObjectWithTag ("Player");
-		rb.GetComponent<Rigidbody> ();
-		Destroy (this.gameObject, 1.5f);
+		Destroy (this.gameObject, lifeSpan);
 		damage = player.GetComponentInChildren<GunScript>().damage;
 		speed = player.GetComponentInChildren<GunScript> ().projectileSpeed;
 		knockback = player.GetComponentInChildren<GunScript> ().knockback;
 	}
 	
 	// Update is called once per frame
-	void Update () {
-		rb.velocity = transform.up * speed;
+	protected virtual void Update () {
+		rb.velocity = transform.forward * speed;
 	}
 
-	void OnTriggerEnter (Collider other) {
+	protected virtual void OnTriggerEnter (Collider other) {
 		if (other.gameObject.tag == "Enemy") {
 			
 			//stun stuff

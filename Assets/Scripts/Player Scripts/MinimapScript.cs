@@ -15,7 +15,8 @@ public class MinimapScript : MonoBehaviour {
 	void Update () {
 		if (player == null) {
 			player = GameObject.FindGameObjectWithTag ("Player");
+		} else {
+			transform.position = new Vector3 (player.transform.position.x, distance, player.transform.position.z);
 		}
-		transform.position = new Vector3 (player.transform.position.x, distance, player.transform.position.z );
 	}
 }

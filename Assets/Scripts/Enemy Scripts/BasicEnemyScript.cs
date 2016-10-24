@@ -10,6 +10,18 @@ public class BasicEnemyScript : MonoBehaviour {
 
 	private NavMeshAgent agent;
 
+	GameObject selectRandomFrom(GameObject[] list){
+		return list[Random.Range(0,list.Length)];
+	}
+
+	void chanceToDropCoins(){
+		int roll = Random.Range (0,6);
+		for(int i = 0; i < roll - 3; i++){
+			GameObject coin = selectRandomFrom(GetComponent<EnemyAttributesScript> ().coins);
+			Instantiate (coin, transform.position, transform.rotation);
+		}
+	}
+
 	// Use this for initialization
 	void Start () {
 		player = GameObject.FindGameObjectWithTag ("Player");
@@ -33,6 +45,7 @@ public class BasicEnemyScript : MonoBehaviour {
 
 
 		if (gameObject.GetComponent<EnemyAttributesScript> ().health <= 0) {
+			chanceToDropCoins ();
 			Destroy (this.gameObject);
 		}
 

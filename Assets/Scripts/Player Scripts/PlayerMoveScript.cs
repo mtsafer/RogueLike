@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class PlayerMoveScript : MonoBehaviour {
 
@@ -13,6 +14,9 @@ public class PlayerMoveScript : MonoBehaviour {
 	private Vector3 movementVector;
 	private float diagonalCoef = 1.4f;
 	private float timeSinceDodge;
+	private float timeSinceOOM;
+	private bool canDodge;
+	private Slider energyBar;
 
 	private GameObject controller;
 
@@ -56,7 +60,7 @@ public class PlayerMoveScript : MonoBehaviour {
 			movementVector.Set (movementVector.x / diagonalCoef, 0, movementVector.z / diagonalCoef);
 		}
 		dodging = true;
-		GetComponent<PlayerScript> ().energy -= 30;
+		GetComponent<PlayerScript> ().energy -= 5;
 	}
 
 	// Use this for initialization
@@ -65,18 +69,21 @@ public class PlayerMoveScript : MonoBehaviour {
 		timeSinceDodge = 1;
 		dodging = false;
 		controller = GameObject.FindGameObjectWithTag ("GameController");
+		canDodge = true;
+		timeSinceOOM = 2;
+		energyBar = GameObject.FindGameObjectWithTag ("Energy Bar").GetComponent<Slider> ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if(!controller.GetComponent<PauseScript>().paused){
 			movementVector.Set (rb.velocity.x, 0, rb.velocity.z);
-			if (timeSinceDodge > 0.11f) {
+			if (timeSinceDodge > 0.1f) {
 				invulnerable = false;
 			} else {
 				invulnerable = true;
 			}
-			if (timeSinceDodge > 0.1f) {
+			if (timeSinceDodge > 0.016f) {
 				dodging = false;
 
 				//move left
@@ -114,11 +121,27 @@ public class PlayerMoveScript : MonoBehaviour {
 					movementVector.Set (movementVector.x / diagonalCoef, 0, movementVector.z / diagonalCoef);
 				}
 
-				if (moving () && Input.GetButton ("Dodge") && timeSinceDodge > 0.1f && GetComponent<PlayerScript>().energy > 30) {
+				if (moving () && Input.GetButton ("Dodge") && timeSinceDodge > 0.016f && GetComponent<PlayerScript>().energy > 5 && canDodge) {
 					dodge ();
 					timeSinceDodge = 0;
 				}
-				if (timeSinceDodge > 0.15f) {
+
+				if (GetComponent<PlayerScript> ().energy < 5) {
+					canDodge = false;
+					timeSinceOOM = 0;
+				}
+
+				if (timeSinceOOM > 1) {
+					canDodge = true;
+				}
+
+				if (!canDodge) {
+					energyBar.fillRect.GetComponent<Image> ().color = new Color (130, 0, 0); 
+				} else {
+					energyBar.fillRect.GetComponent<Image> ().color = new Color (0, 189, 189);
+				}
+
+				if (timeSinceDodge > 0.1f) {
 					if (Mathf.Abs (movementVector.x) > speed) {
 						movementVector.x = speed * movementVector.x / Mathf.Abs (movementVector.x);
 					}
@@ -127,6 +150,7 @@ public class PlayerMoveScript : MonoBehaviour {
 					}
 				}
 			}
+			timeSinceOOM += Time.deltaTime;
 			timeSinceDodge += Time.deltaTime;
 			rb.velocity = movementVector;
 		}

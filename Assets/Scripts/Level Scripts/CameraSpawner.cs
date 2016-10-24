@@ -3,7 +3,7 @@ using System.Collections;
 
 public class CameraSpawner : MonoBehaviour {
 
-	public Camera playerCam;
+	public GameObject playerCam;
 	public Camera miniCam;
 
 	// Use this for initialization

@@ -2,6 +2,8 @@
 using System.Collections;
 using UnityEngine.UI;
 
+
+//THIS WHOLE CLASS IS A HUGE SHITSHOW!
 public class AimGunScript : MonoBehaviour {
 
 	//stuff for aiming
@@ -10,14 +12,12 @@ public class AimGunScript : MonoBehaviour {
 	private GameObject target;
 
 	//stuff for shooting
-	private GameObject bullet;
 	private float fireRatePerMinute;
 	private float timeBetweenShots;
 	private float timeSinceLastShot;
-	private Vector3 bulletSpawnLocation;
-	private GameObject muzzle;
 	private int clipSize;
-	private int currentClip;
+	private float currentClip;
+	private float ammo;
 	private bool reloading;
 	private float reloadTime;
 	private GameObject reloadAnchor;
@@ -53,30 +53,34 @@ public class AimGunScript : MonoBehaviour {
 		}
 	}
 
-	void muzzleFlashStart(){
-		float x = muzzle.transform.localScale.x;
-		float y = muzzle.transform.localScale.y;
-		float z = muzzle.transform.localScale.z;
-		if (muzzle.transform.localScale.x < 10) {
-			x += Time.deltaTime / 0.08f;
-			y += Time.deltaTime / 0.08f;
-			z += Time.deltaTime / 0.08f;
-		} 
-		muzzle.transform.localScale = new Vector3 (x, y, z);
-	}
-
-	void muzzleFlashEnd(){
-		muzzle.transform.localScale = new Vector3 (0, 0, 0);
-	}
-
 	void reload(){
-		if (clipSize - currentClip > GetComponentInChildren<GunScript> ().ammo) {
-			currentClip = (int)GetComponentInChildren<GunScript> ().ammo;
+		if(GetComponentInChildren<GunScript> ().ammo < clipSize) {
+			GetComponentInChildren<GunScript>(). currentClip = (int)GetComponentInChildren<GunScript> ().ammo;
+			GetComponent<GunHolderScript> ().gunStats [GetComponent<GunHolderScript> ().currentGunIndex] [1] = (int)GetComponentInChildren<GunScript> ().ammo;
 		} else {
-			currentClip = clipSize;
+			GetComponentInChildren<GunScript>(). currentClip = clipSize;
+			GetComponent<GunHolderScript> ().gunStats [GetComponent<GunHolderScript> ().currentGunIndex] [1] = clipSize;
 		}
 
-		canvas.GetComponent<ClipScript> ().renderAmmo (clipSize, currentClip, GetComponentInChildren<GunScript> ().maxAmmo, GetComponentInChildren<GunScript> ().ammo);
+		currentClip = GetComponent<GunHolderScript> ().gunStats [GetComponent<GunHolderScript> ().currentGunIndex] [1];
+		ammo = GetComponent<GunHolderScript> ().gunStats [GetComponent<GunHolderScript> ().currentGunIndex] [0];
+
+		canvas.GetComponent<ClipScript> ().renderAmmo (clipSize, (int)currentClip, GetComponentInChildren<GunScript> ().maxAmmo, ammo);
+	}
+
+	public void updateStats(GameObject currentGun){
+		//aiming stuff
+		accuracy = GetComponentInParent<PlayerMoveScript> ().accuracy;
+
+		//shooting stuff
+		fireRatePerMinute = currentGun.GetComponentInChildren<GunScript> ().fireRatePerMinute;
+		timeBetweenShots = 60 / fireRatePerMinute;
+		timeSinceLastShot = timeBetweenShots;
+		clipSize = currentGun.GetComponentInChildren<GunScript> ().clipSize;
+		reloading = false;
+		currentClip = GetComponent<GunHolderScript> ().gunStats [GetComponent<GunHolderScript> ().currentGunIndex] [1];
+		ammo = GetComponent<GunHolderScript> ().gunStats [GetComponent<GunHolderScript> ().currentGunIndex] [0];
+		canvas.GetComponent<ClipScript> ().renderAmmo (clipSize, (int)currentClip, currentGun.GetComponentInChildren<GunScript> ().maxAmmo, ammo);
 	}
 
 	// Use this for initialization
@@ -88,21 +92,23 @@ public class AimGunScript : MonoBehaviour {
 		fireRatePerMinute = GetComponentInChildren<GunScript> ().fireRatePerMinute;
 		timeBetweenShots = 60 / fireRatePerMinute;
 		timeSinceLastShot = timeBetweenShots;
-		bullet = GetComponentInChildren<GunScript> ().bullet;
-		muzzle = GameObject.FindGameObjectWithTag ("Player Muzzle");
 		clipSize = GetComponentInChildren<GunScript> ().clipSize;
-		currentClip = clipSize;
-		reloading = false;
 
-		reloadAnchor = GameObject.Find ("ReloadAnchor");
+		reloading = false;
+		reloadAnchor = GameObject.FindGameObjectWithTag ("Player Canvas");
 		canvas = GameObject.Find ("HealthHUDCanvas");
 		controller = GameObject.FindGameObjectWithTag ("GameController");
-		canvas.GetComponent<ClipScript> ().renderAmmo (clipSize, currentClip, GetComponentInChildren<GunScript> ().maxAmmo, GetComponentInChildren<GunScript> ().ammo);
-
+		GetComponent<GunHolderScript> ().gunStats [GetComponent<GunHolderScript> ().currentGunIndex] [1] = GetComponentInChildren<GunScript>(). currentClip;
+		currentClip = GetComponent<GunHolderScript> ().gunStats [GetComponent<GunHolderScript> ().currentGunIndex] [1];
+		GetComponent<GunHolderScript> ().gunStats [GetComponent<GunHolderScript> ().currentGunIndex] [0] = GetComponentInChildren<GunScript> ().ammo;
+		ammo = GetComponent<GunHolderScript> ().gunStats [GetComponent<GunHolderScript> ().currentGunIndex] [0];
+		canvas.GetComponent<ClipScript> ().renderAmmo (clipSize, (int)currentClip, GetComponentInChildren<GunScript> ().maxAmmo, ammo);
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		currentClip = GetComponent<GunHolderScript> ().gunStats [GetComponent<GunHolderScript> ().currentGunIndex] [1];
+		ammo = GetComponent<GunHolderScript> ().gunStats [GetComponent<GunHolderScript> ().currentGunIndex] [0];
 		if (!controller.GetComponent<PauseScript>().paused) {
 			// Generate a plane that intersects the transform's position with an upwards normal.
 			Plane playerPlane = new Plane(Vector3.up, transform.position);
@@ -132,16 +138,18 @@ public class AimGunScript : MonoBehaviour {
 			trackEnemies ();
 
 			if (Input.GetButton("Fire") && timeSinceLastShot >= timeBetweenShots && !GetComponent<PlayerMoveScript>().dodging && currentClip > 0 && !reloading){
-				bulletSpawnLocation = GameObject.FindGameObjectWithTag("Bullet Spawner").transform.position;
-				Quaternion bulletSpawnRotation = GameObject.FindGameObjectWithTag ("Bullet Spawner").transform.rotation;
-				Instantiate (bullet, bulletSpawnLocation, bulletSpawnRotation);
+				GetComponent<GunHolderScript>().currentGun.GetComponentInChildren<GunScript> ().shoot ();
 				timeSinceLastShot = 0;
-				currentClip -= 1;
+				GetComponent<GunHolderScript> ().gunStats [GetComponent<GunHolderScript> ().currentGunIndex] [1] -= 1;
+				GetComponent<GunHolderScript> ().gunStats [GetComponent<GunHolderScript> ().currentGunIndex] [0] -= 1;
+				currentClip = GetComponent<GunHolderScript> ().gunStats [GetComponent<GunHolderScript> ().currentGunIndex] [1];
+				ammo = GetComponent<GunHolderScript> ().gunStats [GetComponent<GunHolderScript> ().currentGunIndex] [0];
+				GetComponentInChildren<GunScript>(). currentClip -= 1;
 				GetComponentInChildren<GunScript> ().ammo -= 1;
-				canvas.GetComponent<ClipScript> ().renderAmmo (clipSize, currentClip, GetComponentInChildren<GunScript> ().maxAmmo, GetComponentInChildren<GunScript> ().ammo);
+				canvas.GetComponent<ClipScript> ().renderAmmo (clipSize, (int)currentClip, GetComponentInChildren<GunScript> ().maxAmmo, ammo);
 			}
 
-			if (Input.GetButtonDown ("Reload") && !reloading && currentClip < clipSize) {
+			if (Input.GetButtonDown ("Reload") && !reloading && currentClip < clipSize && currentClip != ammo) {
 				reloadTime = 0;
 				reloading = true;
 			}
@@ -160,11 +168,11 @@ public class AimGunScript : MonoBehaviour {
 					Slider reloadSlider = GetComponent<PlayerScript> ().reloadSlider;
 					builtSlider = Instantiate (reloadSlider, reloadSlider.transform.position, reloadSlider.transform.rotation) as Slider;
 					builtSlider.transform.SetParent (reloadAnchor.transform);
-					builtSlider.transform.localPosition = new Vector3 (0, 30, 0);
+					builtSlider.transform.localPosition = new Vector3 (0, 40, 0);
 					builtSlider.transform.localRotation = new Quaternion (25, 0, 0, reloadSlider.transform.rotation.w);
 					builtSlider.transform.localScale = new Vector3 (1, 1, 1);
 				} else {
-					builtSlider.fillRect.transform.localPosition = new Vector3(reloadTime / GetComponentInChildren<GunScript> ().reloadTime * 55 -  25 ,0, 0);
+					builtSlider.value = reloadTime / GetComponentInChildren<GunScript> ().reloadTime;
 				}
 			} else {
 				if (builtSlider) {
@@ -175,12 +183,6 @@ public class AimGunScript : MonoBehaviour {
 			}
 
 			timeSinceLastShot += Time.deltaTime;
-
-			if (timeSinceLastShot < 0.05f) {
-				muzzleFlashStart ();
-			} else {
-				muzzleFlashEnd ();
-			}
 
 			reloadTime += Time.deltaTime;
 		}

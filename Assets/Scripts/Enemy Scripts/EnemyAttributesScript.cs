@@ -11,6 +11,7 @@ public class EnemyAttributesScript : MonoBehaviour {
 	public bool canBeKnockedBack;
 	public bool stunnable;
 	public float timeSinceStun;
+	public GameObject[] coins;
 
 
 	// Use this for initialization

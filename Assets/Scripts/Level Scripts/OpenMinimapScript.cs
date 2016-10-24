@@ -22,6 +22,9 @@ public class OpenMinimapScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update(){
+		if (player == null) {
+			player = GameObject.FindGameObjectWithTag ("Player");
+		}
 		if (Input.GetButtonDown("Minimap") && canOpenMap) {
 			if (minimapOpened) {
 				Time.timeScale = 1;
